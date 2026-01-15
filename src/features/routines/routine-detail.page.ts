@@ -1,9 +1,10 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UiCardComponent } from '../../shared/ui/ui-card.component';
 import { UiButtonComponent } from '../../shared/ui/ui-button.component';
 import { RoutinesStore } from './routines.store';
 import { RoutineStep, RoutineStepType } from '../../core/models/routine.model';
+import { StepEditorSheetComponent } from './step-editor-sheet.component';
 
 function uid(prefix = 'id') {
   return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
@@ -21,7 +22,7 @@ const STEP_TYPES: { type: RoutineStepType; label: string; emoji: string }[] = [
 @Component({
   standalone: true,
   selector: 'app-routine-detail-page',
-  imports: [UiCardComponent, UiButtonComponent, RouterLink],
+  imports: [UiCardComponent, UiButtonComponent, RouterLink, StepEditorSheetComponent],
   template: `
     <div class="p-4 space-y-4">
       <div class="flex items-center justify-between">
@@ -132,6 +133,14 @@ const STEP_TYPES: { type: RoutineStepType; label: string; emoji: string }[] = [
             </app-ui-card>
           }
 
+          <div class="sticky bottom-20 z-10" style="padding-bottom: env(safe-area-inset-bottom);">
+            <div class="mx-auto max-w-md px-4">
+              <app-ui-button variant="primary" size="lg" class="w-full" (click)="addQuickStep()">
+                + Add step 🧩
+              </app-ui-button>
+            </div>
+          </div>
+
           <app-ui-card class="border-dashed">
             <p class="text-sm font-medium">Tip ✨</p>
             <p class="mt-1 text-sm text-(--muted)">
@@ -140,6 +149,7 @@ const STEP_TYPES: { type: RoutineStepType; label: string; emoji: string }[] = [
           </app-ui-card>
         </div>
       }
+      <app-step-editor-sheet (saved)="onStepSaved($event)" />
     </div>
   `,
 })
@@ -157,6 +167,8 @@ export class RoutineDetailPage implements OnInit {
 
   private route = inject(ActivatedRoute);
   private store = inject(RoutinesStore);
+
+  sheet = viewChild(StepEditorSheetComponent);
 
   ngOnInit() {
     this.store.load();
@@ -182,14 +194,7 @@ export class RoutineDetailPage implements OnInit {
   }
 
   addQuickStep() {
-    const step: RoutineStep = {
-      id: uid('step'),
-      title: 'Custom step',
-      minutes: 5,
-      type: 'custom',
-    };
-    this.store.addStep(this.id, step);
-    this.refresh();
+    this.sheet()?.showAdd({ title: '', minutes: 5, type: 'custom' });
   }
 
   removeStep(stepId: string) {
@@ -205,34 +210,29 @@ export class RoutineDetailPage implements OnInit {
   }
 
   editStep(step: RoutineStep) {
-    // MVP: simple prompt-based editor (fast). We'll replace with a modal/bottom sheet soon.
-    const title = prompt('Step title', step.title) ?? step.title;
-    const minutesRaw = prompt('Minutes', String(step.minutes)) ?? String(step.minutes);
-    const minutes = Math.max(1, Math.min(120, Number(minutesRaw) || step.minutes));
-
-    const typeRaw = prompt(
-      'Type (breathe/read/journal/walk/custom)',
-      step.type,
-    ) as RoutineStepType | null;
-
-    const type = (['breathe', 'read', 'journal', 'walk', 'custom'] as const).includes(
-      (typeRaw ?? step.type) as RoutineStepType,
-    )
-      ? ((typeRaw ?? step.type) as RoutineStepType)
-      : step.type;
-
-    const r = this.routine();
-    if (!r) return;
-
-    const nextSteps = r.steps.map((s) =>
-      s.id === step.id ? { ...s, title: title.trim() || s.title, minutes, type } : s,
-    );
-
-    this.store.updateSteps(this.id, nextSteps);
-    this.refresh();
+    this.sheet()?.showEdit(step);
   }
 
   stepEmoji(type: RoutineStepType) {
     return STEP_TYPES.find((t) => t.type === type)?.emoji ?? '✨';
+  }
+
+  onStepSaved(step: RoutineStep) {
+    const r = this.routine();
+    if (!r) return;
+
+    // If editing existing step (id matches), update it.
+    const exists = r.steps.some((s) => s.id === step.id);
+
+    if (exists) {
+      const nextSteps = r.steps.map((s) => (s.id === step.id ? { ...s, ...step } : s));
+      this.store.updateSteps(this.id, nextSteps);
+    } else {
+      // Add new step: generate a real id
+      const next = { ...step, id: uid('step') };
+      this.store.addStep(this.id, next);
+    }
+
+    this.refresh();
   }
 }
