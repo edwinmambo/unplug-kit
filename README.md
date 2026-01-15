@@ -1,59 +1,42 @@
-# UnplugKit
+# 📵 Unplug Kit
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.0.
+**Unplug Kit** is a **privacy-first, mobile-first digital wellbeing planner** built with **Angular v21 + TailwindCSS v4**.
 
-## Development server
+Create calming “unplug routines” (e.g. _breathe → read → journal_), swap doom-scroll triggers for tiny analog actions, and track streaks + minutes reclaimed — **all local-first** (no account required).
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
+## 🌟 Why Unplug Kit?
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Modern attention is under attack. Unplug Kit helps you reclaim focus with small, repeatable routines that feel good and actually stick.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## ✅ MVP Features
 
-```bash
-ng generate component component-name
-```
+- 🧩 **Routine Builder** — create routines with steps, durations, and reorder
+- ⏱️ **Guided Sessions** — step-by-step timer mode (focus-friendly)
+- 🔁 **Analog Swaps Library** — quick replacements for common scroll triggers
+- 🔥 **Streaks + Metrics** — minutes reclaimed, weekly progress
+- 📴 **Local-first** — your data stays on your device
+- 📱 **Mobile-first UI** + dark mode
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## 🧰 Tech Stack
 
-## Building
+- ⚡ Angular 21 (standalone components)
+- 🎨 TailwindCSS 4
+- 🧠 Signals for UI state (where it makes sense)
+- 💾 Local storage (upgradeable to IndexedDB later)
+- 📦 Static deployment (Vercel / Netlify / Cloudflare Pages)
+- 🧼 ESLint + Prettier + Hooks (consistent standards)
 
-To build the project run:
+---
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## 🚀 Getting Started
 
 ```bash
-ng test
+npm install
+npm start
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
