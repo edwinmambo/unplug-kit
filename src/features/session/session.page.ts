@@ -201,8 +201,9 @@ export class SessionPage implements OnInit, OnDestroy {
 
       const left = this.stepRemainingSec();
       if (left <= 1) {
-        // Step finished
-        this.completeCurrentStep();
+        // snap to 0 so UI shows 00:00 briefly
+        this.stepRemainingSec.set(0);
+        this.completeStepFully();
         this.advanceOrFinish();
       } else {
         this.stepRemainingSec.set(left - 1);
@@ -221,22 +222,15 @@ export class SessionPage implements OnInit, OnDestroy {
 
   nextStep() {
     // Count partial completion: credit elapsed seconds -> rounded down to minutes at end
-    this.completeCurrentStep(true);
+    // this.completeCurrentStep(true);
+    this.creditPartialTimeForCurrentStep();
     this.advanceOrFinish();
   }
 
-  private completeCurrentStep(partial = false) {
-    const total = this.stepTotalSec();
-    const left = this.stepRemainingSec();
-    const elapsedSec = Math.max(0, total - left);
-
-    // Only credit minutes in whole minutes for MVP
-    const minutes = Math.floor(elapsedSec / 60);
-    if (minutes > 0) this.completedMinutesAcc.update((m) => m + minutes);
-
-    if (!partial) {
-      this.stepsCompletedAcc.update((n) => n + 1);
-    }
+  private completeStepFully() {
+    // User completed the step: credit the full planned minutes (no rounding loss)
+    this.completedMinutesAcc.update((m) => m + this.currentStepPlannedMinutes());
+    this.stepsCompletedAcc.update((n) => n + 1);
   }
 
   private advanceOrFinish() {
@@ -251,6 +245,8 @@ export class SessionPage implements OnInit, OnDestroy {
   endEarly() {
     const ok = confirm('End session early?');
     if (!ok) return;
+
+    this.creditPartialTimeForCurrentStep();
     this.finish('ended_early');
   }
 
@@ -281,6 +277,22 @@ export class SessionPage implements OnInit, OnDestroy {
     };
 
     this.sessionsRepo.add(log);
+  }
+
+  private currentStepPlannedMinutes() {
+    const r = this.routine();
+    const idx = this.stepIndex();
+    const step = r?.steps[idx];
+    return Math.max(1, step?.minutes ?? 1);
+  }
+
+  private creditPartialTimeForCurrentStep() {
+    const total = this.stepTotalSec();
+    const left = this.stepRemainingSec();
+    const elapsedSec = Math.max(0, total - left);
+
+    const minutes = Math.floor(elapsedSec / 60);
+    if (minutes > 0) this.completedMinutesAcc.update((m) => m + minutes);
   }
 
   goHome() {
