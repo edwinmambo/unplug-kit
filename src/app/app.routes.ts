@@ -25,6 +25,10 @@ export const routes: Routes = [
     loadComponent: () => import('../features/settings/settings.page').then((m) => m.SettingsPage),
   },
   {
+    path: 'session/:id',
+    loadComponent: () => import('../features/session/session.page').then((m) => m.SessionPage),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

@@ -28,7 +28,9 @@ const STEP_TYPES: { type: RoutineStepType; label: string; emoji: string }[] = [
       <div class="flex items-center justify-between">
         <a routerLink="/routines" class="text-sm font-semibold hover:underline">← Back</a>
 
-        <app-ui-button variant="secondary" size="sm"> Start 🧘 </app-ui-button>
+        <a class="inline-flex" [routerLink]="['/session', id]">
+          <app-ui-button variant="secondary" size="sm">Start 🧘</app-ui-button>
+        </a>
       </div>
 
       @if (!routine()) {
@@ -156,7 +158,7 @@ const STEP_TYPES: { type: RoutineStepType; label: string; emoji: string }[] = [
 export class RoutineDetailPage implements OnInit {
   emojis = EMOJIS;
 
-  private id = '';
+  public id = '';
   routine = signal<ReturnType<RoutinesStore['routines']>[number] | null>(null);
 
   totalMinutes = computed(() => {
