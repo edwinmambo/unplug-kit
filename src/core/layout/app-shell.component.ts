@@ -17,9 +17,9 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
           <button
             type="button"
-            class="rounded-xl border border-(--border) bg-(--surface) px-3 py-2 text-sm font-medium active:scale-[0.98]"
+            class="rounded-2xl border border-(--border) bg-(--surface-2) px-3 py-2 text-sm font-semibold active:scale-[0.98] transition"
           >
-            Start ✨
+            Quick session 🧘
           </button>
         </div>
       </header>
@@ -34,12 +34,12 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
         class="fixed bottom-0 left-0 right-0 z-30 border-t border-(--border) bg-(--bg)/80 backdrop-blur"
         style="padding-bottom: env(safe-area-inset-bottom);"
       >
-        <div class="mx-auto grid max-w-md grid-cols-4 px-2 py-2">
+        <div class="mx-auto grid max-w-md grid-cols-4 gap-1 px-2 py-2">
           <a
             routerLink="/"
-            routerLinkActive="text-[var(--text)]"
+            routerLinkActive="text-[var(--text)] bg-[var(--surface)]"
             [routerLinkActiveOptions]="{ exact: true }"
-            class="flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-xs text-(--muted) active:scale-[0.98]"
+            class="flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-xs text-(--muted) transition-colors duration-200 hover:bg-(--surface) active:scale-[0.98]"
           >
             <span class="text-lg leading-none">🏠</span>
             <span class="font-medium">Home</span>
@@ -47,8 +47,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
           <a
             routerLink="/routines"
-            routerLinkActive="text-[var(--text)]"
-            class="flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-xs text-(--muted) active:scale-[0.98]"
+            routerLinkActive="text-[var(--text)] bg-[var(--surface)]"
+            class="flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-xs text-(--muted) transition-colors duration-200 hover:bg-(--surface) active:scale-[0.98]"
           >
             <span class="text-lg leading-none">🧘</span>
             <span class="font-medium">Routines</span>
@@ -56,8 +56,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
           <a
             routerLink="/library"
-            routerLinkActive="text-[var(--text)]"
-            class="flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-xs text-(--muted) active:scale-[0.98]"
+            routerLinkActive="text-[var(--text)] bg-[var(--surface)]"
+            class="flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-xs text-(--muted) transition-colors duration-200 hover:bg-(--surface) active:scale-[0.98]"
           >
             <span class="text-lg leading-none">🔁</span>
             <span class="font-medium">Swaps</span>
@@ -65,8 +65,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
           <a
             routerLink="/settings"
-            routerLinkActive="text-[var(--text)]"
-            class="flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-xs text-(--muted) active:scale-[0.98]"
+            routerLinkActive="text-[var(--text)] bg-[var(--surface)]"
+            class="flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-xs text-(--muted) transition-colors duration-200 hover:bg-(--surface) active:scale-[0.98]"
           >
             <span class="text-lg leading-none">⚙️</span>
             <span class="font-medium">Settings</span>

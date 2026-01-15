@@ -10,6 +10,15 @@
   --border: rgba(255, 255, 255, 0.1);
 }
 
+.light {
+  --bg: #f7f7f8;
+  --surface: rgba(0, 0, 0, 0.04);
+  --surface-2: rgba(0, 0, 0, 0.06);
+  --text: rgba(0, 0, 0, 0.9);
+  --muted: rgba(0, 0, 0, 0.55);
+  --border: rgba(0, 0, 0, 0.1);
+}
+
 html,
 body {
   height: 100%;
