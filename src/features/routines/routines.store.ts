@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Routine } from '../../core/models/routine.model';
+import { Routine, RoutineStep } from '../../core/models/routine.model';
 import { RoutinesRepository } from '../../core/storage/routines.repository';
 
 function uid(prefix = 'rt') {
@@ -45,5 +45,53 @@ export class RoutinesStore {
   delete(id: string) {
     this.repo.delete(id);
     this._routines.update((list) => list.filter((r) => r.id !== id));
+  }
+
+  updateRoutine(id: string, patch: Partial<Omit<Routine, 'id' | 'createdAt'>>) {
+    const current = this._routines().find((r) => r.id === id);
+    if (!current) return;
+
+    const next: Routine = {
+      ...current,
+      ...patch,
+      updatedAt: Date.now(),
+    };
+
+    const saved = this.repo.upsert(next);
+    this._routines.update((list) => list.map((r) => (r.id === id ? saved : r)));
+  }
+
+  updateSteps(id: string, steps: RoutineStep[]) {
+    this.updateRoutine(id, { steps });
+  }
+
+  addStep(id: string, step: RoutineStep) {
+    const current = this._routines().find((r) => r.id === id);
+    if (!current) return;
+    this.updateSteps(id, [...current.steps, step]);
+  }
+
+  deleteStep(id: string, stepId: string) {
+    const current = this._routines().find((r) => r.id === id);
+    if (!current) return;
+    this.updateSteps(
+      id,
+      current.steps.filter((s) => s.id !== stepId),
+    );
+  }
+
+  moveStep(id: string, stepId: string, direction: 'up' | 'down') {
+    const current = this._routines().find((r) => r.id === id);
+    if (!current) return;
+
+    const idx = current.steps.findIndex((s) => s.id === stepId);
+    if (idx === -1) return;
+
+    const swapWith = direction === 'up' ? idx - 1 : idx + 1;
+    if (swapWith < 0 || swapWith >= current.steps.length) return;
+
+    const steps = [...current.steps];
+    [steps[idx], steps[swapWith]] = [steps[swapWith], steps[idx]];
+    this.updateSteps(id, steps);
   }
 }
