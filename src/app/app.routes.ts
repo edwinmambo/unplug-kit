@@ -12,6 +12,11 @@ export const routes: Routes = [
     loadComponent: () => import('../features/routines/routines.page').then((m) => m.RoutinesPage),
   },
   {
+    path: 'routines/:id',
+    loadComponent: () =>
+      import('../features/routines/routine-detail.page').then((m) => m.RoutineDetailPage),
+  },
+  {
     path: 'library',
     loadComponent: () => import('../features/library/library.page').then((m) => m.LibraryPage),
   },
